@@ -5,10 +5,12 @@ DOWN = 40;
 
 if (Meteor.isClient) {
 
-  // TODO (P0): Display next tile
-
   Template.game.rows = function() {
     return Session.get("tiles");
+  }
+
+  Template.game.next = function() {
+    return Session.get("next_tile");
   }
 
   Template.game.tile_class = function(tile) {
@@ -31,6 +33,12 @@ if (Meteor.isClient) {
       return tile;
   }
 
+  Template.game.tile_next = function(tile) {
+    if (tile >= 3) {
+      return " ";
+    }
+  }
+
   // TODO (P1): Calibrate new game
   function new_game() {
     var tiles = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
@@ -48,7 +56,7 @@ if (Meteor.isClient) {
     }
 
     Session.set("tiles", tiles);
-    Session.set("next_tile", 3);
+    Session.set("next_tile", 2);
   }
 
   // TODO (P1): Refactor this mess

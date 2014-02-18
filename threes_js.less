@@ -37,7 +37,7 @@ a {
   .title {
     h1 {
       font-weight: 700;
-      letter-spacing: 2px;
+      letter-spacing: 4px;
       margin: 0;
       text-transform: uppercase;
 
@@ -68,6 +68,7 @@ a {
 .game {
   margin: 0 auto;
   max-width: 400px;
+  position: relative;
 
   .board {
     background: @light-green;
@@ -77,39 +78,64 @@ a {
     .row {
       overflow: hidden;
       text-align: center;
+    }
+  }
 
-      .tile {
-        background: @dark-green;
-        .border-radius;
-        float: left;
-        font-size: 42px;
-        height: 110px;
-        line-height: 110px;
-        margin: 10px 6px;
-        width: 80px;
+  .next {
 
-        &.none {
-          box-shadow: 0px 8px @dark-green;
-        }
+    background: @light-green;
+    .border-radius;
+    left: -130px;
+    padding: 16px 32px 8px 10px;
+    position: absolute;
+    top: 0px;
 
-        &.red {
-          background: @red;
-          box-shadow: 0px 8px darken(@red, 20%);
-          color: #FFF;
-        }
+    .title {
+      font-weight: 700;
+      padding-left: 6px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+  }
 
-        &.blue {
-          background: @blue;
-          box-shadow: 0px 8px darken(@blue, 20%);
-          color: #FFF;
-        }
+  .tile {
+    background: @dark-green;
+    .border-radius;
+    float: left;
+    font-size: 42px;
+    height: 110px;
+    line-height: 110px;
+    margin: 10px 6px;
+    text-align: center;
+    width: 80px;
 
-        &.number {
-          background: #FFF;
-          box-shadow: 0px 8px @yellow;
-          color: #000;
-        }
-      }
+    &.none {
+      box-shadow: 0px 8px @dark-green;
+    }
+
+    &.red {
+      background: @red;
+      box-shadow: 0px 8px darken(@red, 20%);
+      color: #FFF;
+    }
+
+    &.blue {
+      background: @blue;
+      box-shadow: 0px 8px darken(@blue, 20%);
+      color: #FFF;
+    }
+
+    &.number {
+      background: #FFF;
+      box-shadow: 0px 8px @yellow;
+      color: #000;
+    }
+
+    &.small {
+      box-shadow: none !important;
+      height: 77px;
+      width: 56px;
+      line-height: 77px;
     }
   }
 }
