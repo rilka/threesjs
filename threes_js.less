@@ -1,0 +1,121 @@
+@yellow: #ffcc66;
+@blue: #66ccff;
+@red: #ff6680;
+@light-green: #d0e6df;
+@dark-green: #b6d9d9;
+@gray: #666e80;
+
+@import url(http://fonts.googleapis.com/css?family=Nunito:300,400,700);
+
+.border-radius(@radius: 10px) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  border-radius: @radius;
+}
+
+html, body {
+  background: #FAFAFA;
+  color: #777E8C;
+  font-family: "Nunito", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: darken(@dark-green, 10%);
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.intro {
+  margin: 40px auto;
+  max-width: 600px;
+  text-align: center;
+
+  .title {
+    h1 {
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin: 0;
+      text-transform: uppercase;
+
+      .red {
+        color: @red;
+      }
+
+      .blue {
+        color: @blue;
+      }
+    }
+
+    h2 {
+      font-weight: 400;
+      margin: 0;
+    }
+
+  }
+
+  .rules {
+    font-weight: 300;
+    p {
+      margin: 30px 0 0;
+    }
+  }
+}
+
+.game {
+  margin: 0 auto;
+  max-width: 400px;
+
+  .board {
+    background: @light-green;
+    .border-radius;
+    padding: 12px 16px;
+
+    .row {
+      overflow: hidden;
+      text-align: center;
+
+      .tile {
+        background: @dark-green;
+        .border-radius;
+        float: left;
+        font-size: 42px;
+        height: 110px;
+        line-height: 110px;
+        margin: 10px 6px;
+        width: 80px;
+
+        &.none {
+          box-shadow: 0px 8px @dark-green;
+        }
+
+        &.red {
+          background: @red;
+          box-shadow: 0px 8px darken(@red, 20%);
+          color: #FFF;
+        }
+
+        &.blue {
+          background: @blue;
+          box-shadow: 0px 8px darken(@blue, 20%);
+          color: #FFF;
+        }
+
+        &.number {
+          background: #FFF;
+          box-shadow: 0px 8px @yellow;
+          color: #000;
+        }
+      }
+    }
+  }
+}
+
+.footer {
+  margin: 40px 0 20px;
+  font-weight: 300;
+  text-align: center;
+}

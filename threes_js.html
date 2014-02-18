@@ -1,0 +1,45 @@
+<head>
+  <title>threes_js</title>
+</head>
+
+<body>
+  {{> main}}
+</body>
+
+<template name="main">
+  {{> intro}}
+  {{> game}}
+  {{> footer}}
+</template>
+
+<template name="intro">
+  <div class="intro">
+    <div class="title">
+      <h1>Threes<span class="blue">J</span><span class="red">S</span></h1>
+      <h2>A tiny knockoff of <a href="http://www.threesgame.com">perfection</a>.</h2>
+    </div>
+    <div class="rules">
+      <p>Use your arrow keys (&#8592; &#8593; &#8594; &#8595;) to play.</p>
+    </div>
+  </div>
+</template>
+
+<template name="game">
+  <div class="game">
+    <div class="board">
+      {{#each rows}}
+        <div class="row">
+          {{#each this}}
+            <div class="tile {{tile_class this}}">{{tile_text this}}</div>
+          {{/each}}
+        </div>
+      {{/each}}
+    </div>
+  </div>
+</template>
+
+<template name="footer">
+  <div class="footer">
+    Hackily ported by <a href="http://www.angela.li">Angela</a>.
+  </div>
+</template>
