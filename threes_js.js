@@ -62,7 +62,9 @@ if (Meteor.isClient) {
   // TODO (P1): Refactor this mess
   // Gameplay
   $(window).on('keydown', function(e) {
+
     var tiles = Session.get("tiles");
+    var original_tiles = JSON.parse(JSON.stringify(tiles));
 
     switch(e.which) {
       case LEFT:
@@ -173,6 +175,11 @@ if (Meteor.isClient) {
     }
 
     e.preventDefault();
+
+    if (_.isEqual(tiles, original_tiles)){
+      return; // invalid move
+    }
+
     new_tile(e.which, tiles);
   });
 
