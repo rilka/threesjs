@@ -1,3 +1,14 @@
+/* * * * * * * * * * * * * * * * * * *
+
+[P0] Animations
+[P0] Calibrate new tile location
+[P0] Calibrate new tile rank
+[P1] Make endgame cute
+[P1] Share scores
+[P2] Refactor
+
+* * * * * * * * * * * * * * * * * * */
+
 LEFT = 37;
 RIGHT = 39;
 UP = 38;
@@ -39,7 +50,10 @@ if (Meteor.isClient) {
     }
   }
 
-  // TODO (P1): Calibrate new game
+  Template.game.rendered = function() {
+    check_lost();
+  }
+
   function new_game() {
     var tiles = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
 
@@ -59,12 +73,18 @@ if (Meteor.isClient) {
     Session.set("next_tile", 2);
   }
 
-  // TODO (P1): Refactor this mess
   // Gameplay
   $(window).on('keydown', function(e) {
     var tiles = Session.get("tiles");
 
-    switch(e.which) {
+    tiles = generate_new_board(e.which, tiles);
+    e.preventDefault();
+    new_tile(e.which, tiles);
+  });
+
+
+  function generate_new_board(direction, tiles) {
+    switch(direction) {
       case LEFT:
         for (var i = 0; i <= 3; i++) {
           for (var j = 0; j <= 3; j++) {
@@ -168,16 +188,38 @@ if (Meteor.isClient) {
           }
         }
       break;
-
-      default: return;
     }
 
-    e.preventDefault();
-    new_tile(e.which, tiles);
-  });
+    return tiles;
+  }
 
-  // TODO (P1): Calibrate (location and rank)
   function new_tile(direction, tiles) {
+    var locs = get_move(direction, tiles);
+    var loc = _.sample(locs);
+
+    // Illegal move
+    if (!loc) {
+      return;
+    }
+
+    tiles[loc.i][loc.j] = Session.get("next_tile");
+    Session.set("tiles", tiles);
+
+    function random_tile() {
+      var probs = [1, 1, 1, 1, 1, 1,
+                   2, 2, 2, 2, 2, 2,
+                   3, 3, 3, 3, 3, 3,
+                   6, 6, 6,
+                   12, 12,
+                   24];
+      var ind = Math.floor(Math.random() * probs.length);
+      return probs[ind];
+    }
+
+    Session.set("next_tile", random_tile());
+  }
+
+  function get_move(direction, tiles) {
     var locs = [];
 
     switch(direction) {
@@ -214,32 +256,46 @@ if (Meteor.isClient) {
       break;
     }
 
-    var loc = _.sample(locs);
-
-    // TODO (P1): Fix this (invalid move != no more moves)
-    if (!loc) {
-      lost();
-      return;
-    }
-
-    tiles[loc.i][loc.j] = Session.get("next_tile");
-    Session.set("tiles", tiles);
-
-    function random_tile() {
-      var probs = [1, 1, 1, 2, 2, 2, 3, 3, 3, 6, 6, 12, 24];
-      var ind = Math.floor(Math.random() * probs.length);
-      return probs[ind];
-    }
-
-    Session.set("next_tile", random_tile());
+    return locs;
   }
 
-  // TODO (P1): Calculate score like actual Threes
-  // TODO (P1): Make this cute
+  function check_lost() {
+    var tiles = Session.get("tiles");
+
+    // Check for empty spaces
+    var tile_list = _.flatten(tiles);
+    if (_.contains(tile_list, 0))
+      return;
+
+    // Check for moves left
+    var directions = [LEFT, RIGHT, UP, DOWN];
+
+    var test_boards = [];
+    for (var i = 0; i < directions.length; i++) {
+      test_boards.push(generate_new_board(directions[i], tiles));
+    }
+
+    var test_moves = [];
+    for (var i = 0; i < directions.length; i++) {
+      for (var j = 0; j < test_boards.length; j++) {
+        test_moves.push(get_move(directions[i], test_boards[j]));
+      }
+    }
+
+    if (_.some(test_moves, function(x) {return !_.isEmpty(x)})) // Valid move left
+      return;
+
+    // Oops
+    lost();
+  }
+
   function lost() {
     var tiles = Session.get("tiles");
-    var score = _.reduce(_.flatten(tiles), function(acc, x) {return acc + x;}, 0);
-    alert("No more moves! Your score is " + score + " ^__^");
+    var score = function(x) {return Math.pow(3, (Math.log(x / 3) / Math.log(10) + 1))}
+    var total = _.reduce(_.flatten(tiles), function(acc, x) {return acc + x;}, 0);
+
+    alert("No more moves! Your score is " + total + " ^__^");
+
     new_game();
   }
 
