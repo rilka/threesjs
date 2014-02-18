@@ -5,22 +5,7 @@ DOWN = 40;
 
 if (Meteor.isClient) {
 
-  // TODO (P1): Calibrate
-  var tiles = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
-
-  function random_tile_blank() {
-    var probs = [0, 0, 0, 0, 0, 0, 3, 3, 2, 2, 1, 1];
-    var ind = Math.floor(Math.random() * probs.length);
-    return probs[ind];
-  }
-
-  for (var i = 0; i <= 3; i++) {
-    for (var j = 0; j <= 3; j++) {
-      tiles[i][j] = random_tile_blank();
-    }
-  }
-
-  Session.set("tiles", tiles);
+  // TODO (P0): Display next tile
 
   Template.game.rows = function() {
     return Session.get("tiles");
@@ -46,63 +31,28 @@ if (Meteor.isClient) {
       return tile;
   }
 
-  // TODO (P0): Display next tile
-  // TODO (P0): End game when done
-  // TODO (P1): Calibrate (location and rank)
-  function random_tile() {
-    var probs = [1, 1, 1, 2, 2, 2, 3, 3, 3, 6, 6, 12, 24];
-    var ind = Math.floor(Math.random() * probs.length);
-    return probs[ind];
-  }
+  // TODO (P1): Calibrate new game
+  function new_game() {
+    var tiles = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
 
-  function next_tile(direction, tiles) {
-    var locs = [];
-
-    switch(direction) {
-      case LEFT: // Right column
-        var j = 3;
-        for (var i = 0; i <= 3; i++) {
-          if (tiles[i][j] == 0)
-            locs.push({i: i, j: j});
-        }
-      break;
-
-      case RIGHT: // Left column
-        var j = 0;
-        for (var i = 0; i <= 3; i++) {
-          if (tiles[i][j] == 0)
-            locs.push({i: i, j: j});
-        }
-      break;
-
-      case UP: // Bottom column
-        var i = 3;
-        for (var j = 0; j <= 3; j++) {
-          if (tiles[i][j] == 0)
-            locs.push({i: i, j: j});
-        }
-      break;
-
-      case DOWN: // Top column
-        var i = 0;
-        for (var j = 0; j <= 3; j++) {
-          if (tiles[i][j] == 0)
-            locs.push({i: i, j: j});
-        }
-      break;
+    function random_tile_blank() {
+      var probs = [0, 0, 0, 0, 0, 0, 3, 3, 2, 2, 1, 1];
+      var ind = Math.floor(Math.random() * probs.length);
+      return probs[ind];
     }
 
-    var loc = _.sample(locs);
-    if (!loc) {
-      alert("YOU LOST!");
+    for (var i = 0; i <= 3; i++) {
+      for (var j = 0; j <= 3; j++) {
+        tiles[i][j] = random_tile_blank();
+      }
     }
-    else {
-      tiles[loc.i][loc.j] = random_tile();
-    }
+
     Session.set("tiles", tiles);
+    Session.set("next_tile", 3);
   }
 
-  // TODO (P1): Refactor (this mess is embarrassing as f)
+  // TODO (P1): Refactor this mess
+  // Gameplay
   $(window).on('keydown', function(e) {
     var tiles = Session.get("tiles");
 
@@ -215,7 +165,75 @@ if (Meteor.isClient) {
     }
 
     e.preventDefault();
-    next_tile(e.which, tiles);
+    new_tile(e.which, tiles);
   });
 
+  // TODO (P1): Calibrate (location and rank)
+  function new_tile(direction, tiles) {
+    var locs = [];
+
+    switch(direction) {
+      case LEFT: // Right column
+        var j = 3;
+        for (var i = 0; i <= 3; i++) {
+          if (tiles[i][j] == 0)
+            locs.push({i: i, j: j});
+        }
+      break;
+
+      case RIGHT: // Left column
+        var j = 0;
+        for (var i = 0; i <= 3; i++) {
+          if (tiles[i][j] == 0)
+            locs.push({i: i, j: j});
+        }
+      break;
+
+      case UP: // Bottom column
+        var i = 3;
+        for (var j = 0; j <= 3; j++) {
+          if (tiles[i][j] == 0)
+            locs.push({i: i, j: j});
+        }
+      break;
+
+      case DOWN: // Top column
+        var i = 0;
+        for (var j = 0; j <= 3; j++) {
+          if (tiles[i][j] == 0)
+            locs.push({i: i, j: j});
+        }
+      break;
+    }
+
+    var loc = _.sample(locs);
+
+    // TODO (P1): Fix this (invalid move != no more moves)
+    if (!loc) {
+      lost();
+      return;
+    }
+
+    tiles[loc.i][loc.j] = Session.get("next_tile");
+    Session.set("tiles", tiles);
+
+    function random_tile() {
+      var probs = [1, 1, 1, 2, 2, 2, 3, 3, 3, 6, 6, 12, 24];
+      var ind = Math.floor(Math.random() * probs.length);
+      return probs[ind];
+    }
+
+    Session.set("next_tile", random_tile());
+  }
+
+  // TODO (P1): Calculate score like actual Threes
+  // TODO (P1): Make this cute
+  function lost() {
+    var tiles = Session.get("tiles");
+    var score = _.reduce(_.flatten(tiles), function(acc, x) {return acc + x;}, 0);
+    alert("No more moves! Your score is " + score + " ^__^");
+    new_game();
+  }
+
+  new_game();
 }
