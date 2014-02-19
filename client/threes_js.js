@@ -76,6 +76,9 @@ function render_board() {
 }
 
 function render_next() {
+  $(".next .tile").removeClass("red");
+  $(".next .tile").removeClass("blue");
+  $(".next .tile").removeClass("number");
   $(".next .tile").addClass(tile_class(next_tile));
 }
 
@@ -145,9 +148,57 @@ function animate_move(obj, direction) {
       el.addClass(tile_class(t.t));
       el.html(t.t);
     });
-
-
   });
+}
+
+function animate_new_tile(coords, direction) {
+  // TODO: Literally all of this should be refactored
+  var origin;
+
+  console.log(direction);
+  switch(direction) {
+    case LEFT:
+      origin = function(top, left) {
+        return {top: top, left: left + 92};
+      }
+    break;
+
+    case RIGHT:
+      origin = function(top, left) {
+        return {top: top, left: left - 92};
+      }
+    break;
+
+    case UP:
+      origin = function(top, left) {
+        return {top: top + 130, left: left};
+      }
+    break;
+
+    case DOWN:
+      origin = function(top, left) {
+        return {top: top - 130, left: left};
+      }
+    break;
+  }
+
+  var block = Template.tile({row: coords.i, col: coords.j, tile: next_tile});
+  block = $(block).addClass(tile_class(next_tile));
+
+  var top = 22 + (coords.i * 130);
+  var left = 22 + (coords.j * 92);
+  var origins = origin(top, left);
+
+  block.css({
+    left: origins.left,
+    top: origins.top
+  });
+  $(".board").append(block);
+
+  block.animate({
+    top: top,
+    left: left
+  }, 200, "easeOutQuart");
 
 }
 
@@ -185,11 +236,13 @@ function move(e) {
   animate_move(g, direction);
   tiles = g.board;
 
-  // Extract the columns that moved
   // Add in the new tile
-  // Update global tiles array
+  var l = insert_new_tile(direction);
+  animate_new_tile(l, direction);
+  tiles[l.i][l.j] = next_tile;
 
-  tick();
+  // Woohoo!
+  setTimeout(tick, 1000);
 }
 
 function generate_new_board(direction) {
@@ -283,6 +336,47 @@ function generate_new_board(direction) {
   return {board: board, moved: moved};
 }
 
+// TODO: Extract only columns that moved and insert tile there
+function insert_new_tile(direction) {
+  var locs = [];
+
+  switch(direction) {
+    case LEFT: // Right column
+      var j = 3;
+      for (var i = 0; i <= 3; i++) {
+        if (tiles[i][j] == 0)
+          locs.push({i: i, j: j});
+      }
+    break;
+
+    case RIGHT: // Left column
+      var j = 0;
+      for (var i = 0; i <= 3; i++) {
+        if (tiles[i][j] == 0)
+          locs.push({i: i, j: j});
+      }
+    break;
+
+    case UP: // Bottom column
+      var i = 3;
+      for (var j = 0; j <= 3; j++) {
+        if (tiles[i][j] == 0)
+          locs.push({i: i, j: j});
+      }
+    break;
+
+    case DOWN: // Top column
+      var i = 0;
+      for (var j = 0; j <= 3; j++) {
+        if (tiles[i][j] == 0)
+          locs.push({i: i, j: j});
+      }
+    break;
+  }
+
+  return _.sample(locs);
+}
+
 function tick() {
   // Check for empty spaces
   var tile_list = _.flatten(tiles);
@@ -307,6 +401,7 @@ function tick() {
 
 function next() {
   next_tile = random_tile();
+  render_next(next_tile);
 }
 
 // TODO: Make endgame cute
