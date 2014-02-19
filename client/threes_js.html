@@ -9,39 +9,35 @@
 </body>
 
 <template name="main">
-  {{> intro}}
+  {{> header}}
   {{> game}}
   {{> footer}}
 </template>
 
-<template name="intro">
-  <div class="intro">
-    <div class="title">
-      <h1>Threes<span class="blue">J</span><span class="red">S</span></h1>
-      <h2>A tiny browser clone of <a href="http://www.threesgame.com">the most perfect game</a>.</h2>
-    </div>
-    <div class="rules">
-      <p>Use your arrow keys (&#8592; &#8593; &#8594; &#8595;) or drag your mouse to play.</p>
-    </div>
+<!-- MAIN COMPONENTS -->
+
+<template name="header">
+  <div class="header">
+    <h1>Threes<span class="blue">J</span><span class="red">S</span></h1>
+    <h2>A tiny browser clone of <a href="http://www.threesgame.com">a perfect game</a>.</h2>
+    <p>Use your arrow keys (&#8592; &#8593; &#8594; &#8595;) to play.</p>
   </div>
 </template>
 
 <template name="game">
   <div class="game">
     <div class="board">
-      {{#each rows}}
-        <div class="row">
-          {{#each this}}
-            <div class="tile-container">
-              <div class="tile {{tile_class this}}">{{tile_text this}}</div>
-            </div>
-          {{/each}}
-        </div>
-      {{/each}}
+      {{#times 4}}
+      <div class="row">
+        {{#times 4}}
+          <div class="tile-container"></div>
+        {{/times}}
+      </div>
+      {{/times}}
     </div>
     <div class="next">
       <div class="title">Next</div>
-      <div class="small {{tile_class next}} tile">{{tile_next next}}</div>
+      <div class="tile"></div>
     </div>
   </div>
 </template>
@@ -50,4 +46,10 @@
   <div class="footer">
     Hackily ported by <a href="http://www.angela.li">Angela</a>.
   </div>
+</template>
+
+<!-- INDIVIDUAL TILES -->
+
+<template name="tile">
+  <div class="tile" data-coords="{{ row }}{{ col }}">{{ tile }}</div>
 </template>

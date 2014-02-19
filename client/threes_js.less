@@ -1,0 +1,146 @@
+@blue: #66CCFF;
+@dark-green: #B6D9D9;
+@gray: #666E80;
+@light-green: #D0E6DF;
+@red: #FF6680;
+@yellow: #FFCC66;
+
+@import url(http://fonts.googleapis.com/css?family=Nunito:300,400,700);
+
+.border-radius(@radius: 10px) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  border-radius: @radius;
+}
+
+html, body {
+  background: #FAFAFA;
+  color: #777E8C;
+  font-family: "Nunito", sans-serif;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+a {
+  color: darken(@dark-green, 10%);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.header {
+  margin: 40px 0;
+  text-align: center;
+
+  h1 {
+    font-weight: 700;
+    letter-spacing: 4px;
+    margin: 0;
+    text-transform: uppercase;
+
+    .red { color: @red; }
+    .blue { color: @blue; }
+  }
+
+  h2 {
+    font-weight: 400;
+    margin: 0;
+  }
+
+  p {
+    font-weight: 300;
+    margin: 30px 0 0;
+  }
+}
+
+/******************** MAIN COMPONENTS ****************************************/
+
+.game {
+  margin: 0 auto;
+  max-width: 400px;
+  position: relative;
+
+  .board {
+    .border-radius;
+    background: @light-green;
+    padding: 12px 16px;
+
+    .row {
+      overflow: hidden;
+      text-align: center;
+
+      .tile-container {
+        .border-radius;
+        background: @dark-green;
+        box-shadow: 0px 8px @dark-green;
+        float: left;
+        height: 110px;
+        margin: 10px 6px;
+        width: 80px;
+      }
+    }
+  }
+
+  .next {
+    .border-radius;
+    background: @light-green;
+    left: -130px;
+    padding: 12px 32px 24px 20px;
+    position: absolute;
+    top: 0px;
+
+    .title {
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin: 0 0 4px 2px;
+      text-transform: uppercase;
+    }
+
+    .tile {
+      height: 77px;
+      position: static !important;
+      width: 56px;
+      line-height: 77px;
+    }
+  }
+}
+
+.footer {
+  font-weight: 300;
+  margin: 40px 0 20px;
+  text-align: center;
+}
+
+/******************** INDIVIDUAL TILES ***************************************/
+
+.tile {
+  font-size: 42px;
+  height: 110px;
+  line-height: 110px;
+  position: absolute;
+  text-align: center;
+  width: 80px;
+  z-index: 1;
+  .border-radius;
+
+  &.red {
+    background: @red;
+    box-shadow: 0px 8px darken(@red, 20%);
+    color: #FFF;
+  }
+
+  &.blue {
+    background: @blue;
+    box-shadow: 0px 8px darken(@blue, 20%);
+    color: #FFF;
+  }
+
+  &.number {
+    background: #FFF;
+    box-shadow: 0px 8px @yellow;
+    color: #000;
+  }
+}
