@@ -428,7 +428,9 @@ function lost() {
 
 $(function() {
   new_game();
-  $(window).on("keydown", move);
+
+  var lazy_move = _.debounce(move, 250, true);
+  $(window).on("keydown", lazy_move);
 
   // I don't know where to put this
   var method = "play";
