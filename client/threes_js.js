@@ -18,16 +18,18 @@ function random_tile_with_blank() {
   return ps[ind];
 }
 
-// TODO: Should use shuffled-deck algorithm instead
+// TODO: Should insert random high-number tiles
+var deck = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3];
+var current_deck = [];
 function random_tile() {
-  var ps = [1, 1, 1, 1, 1, 1,
-            2, 2, 2, 2, 2, 2,
-            3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            6, 6, 6, 6,
-            12, 12,
-            24];
-  var ind = Math.floor(Math.random() * ps.length);
-  return ps[ind];
+  if (_.isEmpty(current_deck)) {
+    current_deck = _.shuffle(deck);
+  }
+
+  var t = _.first(current_deck);
+  current_deck = _.rest(current_deck);
+
+  return t;
 }
 
 // Helper to compute tile class
