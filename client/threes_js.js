@@ -132,13 +132,15 @@ function animate_move(obj, direction) {
     break;
   }
 
+  $(".tile").css("zIndex", 10);
+
   _.each(moved, function(t) {
     var el = $("[data-coords=" + String(t.i) + String(t.j) + "]");
 
     var old_coords = {top: parseInt(el.css("top")), left: parseInt(el.css("left"))};
     var new_coords = movement(old_coords);
 
-    el.css("zIndex", el.css("zIndex") + 10);
+    el.css("zIndex", 100);
     el.animate({
       top: new_coords.top,
       left: new_coords.left
@@ -158,7 +160,6 @@ function animate_move(obj, direction) {
 function animate_new_tile(coords, direction) {
   var origin;
 
-  console.log(direction);
   switch(direction) {
     case LEFT:
       origin = function(top, left) {
@@ -228,8 +229,6 @@ function new_game() {
 }
 
 function move(e) {
-  e.preventDefault();
-
   var direction = e.which;
   var g = generate_new_board(direction);
 
@@ -243,7 +242,7 @@ function move(e) {
   tiles = g.board;
 
   // Add in the new tile
-  var l = insert_new_tile(direction);
+  var l = insert_new_tile(g.moved, direction);
   animate_new_tile(l, direction);
   tiles[l.i][l.j] = next_tile;
 
@@ -342,40 +341,52 @@ function generate_new_board(direction) {
   return {board: board, moved: moved};
 }
 
-function insert_new_tile(direction) {
+function insert_new_tile(moved, direction) {
   var locs = [];
 
   switch(direction) {
     case LEFT: // Right column
       var j = 3;
-      for (var i = 0; i <= 3; i++) {
-        if (tiles[i][j] == 0)
+      var rows = _.uniq(_.pluck(moved, "i"));
+
+      _.each(rows, function(i) {
+        if (tiles[i][j] == 0) {
           locs.push({i: i, j: j});
-      }
+        }
+      });
     break;
 
     case RIGHT: // Left column
       var j = 0;
-      for (var i = 0; i <= 3; i++) {
-        if (tiles[i][j] == 0)
+      var rows = _.uniq(_.pluck(moved, "i"));
+
+      _.each(rows, function(i) {
+        if (tiles[i][j] == 0) {
           locs.push({i: i, j: j});
-      }
+        }
+      });
     break;
 
     case UP: // Bottom column
       var i = 3;
-      for (var j = 0; j <= 3; j++) {
-        if (tiles[i][j] == 0)
+      var cols = _.uniq(_.pluck(moved, "j"));
+
+      _.each(cols, function(j) {
+        if (tiles[i][j] == 0) {
           locs.push({i: i, j: j});
-      }
+        }
+      });
     break;
 
     case DOWN: // Top column
       var i = 0;
-      for (var j = 0; j <= 3; j++) {
-        if (tiles[i][j] == 0)
+      var cols = _.uniq(_.pluck(moved, "j"));
+
+      _.each(cols, function(j) {
+        if (tiles[i][j] == 0) {
           locs.push({i: i, j: j});
-      }
+        }
+      });
     break;
   }
 
@@ -430,19 +441,22 @@ $(function() {
   new_game();
 
   var lazy_move = _.debounce(move, 250, true);
-  $(window).on("keydown", lazy_move);
+  $(window).on("keydown", function(e) {
+    e.preventDefault();
+    lazy_move(e);
+  });
 
   // I don't know where to put this
   var method = "play";
   $("#music-control").click(function() {
     if (method == "play") {
       $("#music-audio").get(0)["play"]();
-      $(this).html("silence");
+      $(this).html("Pause");
       method = "pause";
     }
     else {
       $("#music-audio").get(0)["pause"]();
-      $(this).html("music");
+      $(this).html("Play");
       method = "play";
     }
   });

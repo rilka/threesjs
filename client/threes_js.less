@@ -23,18 +23,23 @@ html, body {
   color: #777E8C;
   font-family: "Nunito", sans-serif;
   margin: 0;
-  overflow: hidden;
   padding: 0;
 }
 
 a {
   color: darken(@dark-green, 10%);
+  cursor: crosshair;
   text-decoration: none;
   .transition;
 
   &:hover {
     color: darken(@dark-green, 20%);
   }
+}
+
+::selection {
+  background: @yellow;
+  color: @gray;
 }
 
 .header {
@@ -58,7 +63,7 @@ a {
 
   p {
     font-weight: 300;
-    margin: 30px 0 0;
+    margin: 20px 0 0;
 
     a {
       font-weight: 400;
@@ -121,8 +126,12 @@ a {
 
 .footer {
   font-weight: 300;
-  margin: 40px 0 20px;
+  margin: 30px 0 20px;
   text-align: center;
+
+  a {
+    font-weight: 400;
+  }
 }
 
 /******************** INDIVIDUAL TILES ***************************************/
