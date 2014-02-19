@@ -205,6 +205,9 @@ function animate_new_tile(coords, direction) {
 /******************** GAME FUNCTIONS *****************************************/
 
 function new_game() {
+  // Clear out old tiles
+  $(".board .tile").remove();
+
   // Generate new configuration
   tiles = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
   for (var i = 0; i <= 3; i++) {
@@ -242,7 +245,7 @@ function move(e) {
   tiles[l.i][l.j] = next_tile;
 
   // Woohoo!
-  setTimeout(tick, 1000);
+  tick();
 }
 
 function generate_new_board(direction) {
@@ -396,7 +399,7 @@ function tick() {
   }
 
   // Oops, no empty spaces or moves left
-  lost();
+  setTimeout(lost, 500);
 }
 
 function next() {
