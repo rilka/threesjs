@@ -1,0 +1,6 @@
+P0: Fix z-index weirdness with moving tiles
+P0: Fix next tile location (only in moving columns)
+P1: Add high-number tiles to stack (1/8th of highest tile, once every two stacks)
+P1: Make endgame cute
+P1: Share scores on Facebook / Twitter
+P2: Refactor messy things

@@ -12,15 +12,9 @@ var next_tile = null;
 
 /******************** UTILITY FUNCTIONS **************************************/
 
-function random_tile_with_blank() {
-  var ps = [0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 3, 3];
-  var ind = Math.floor(Math.random() * ps.length);
-  return ps[ind];
-}
-
-// TODO: Should insert random high-number tiles
 var deck = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3];
 var current_deck = [];
+
 function random_tile() {
   if (_.isEmpty(current_deck)) {
     current_deck = _.shuffle(deck);
@@ -30,6 +24,16 @@ function random_tile() {
   current_deck = _.rest(current_deck);
 
   return t;
+}
+
+function random_tile_with_blank() {
+  var r = Math.random();
+  if (r < 0.3) {
+    return random_tile();
+  }
+  else {
+    return 0;
+  }
 }
 
 // Helper to compute tile class
@@ -134,14 +138,12 @@ function animate_move(obj, direction) {
     var old_coords = {top: parseInt(el.css("top")), left: parseInt(el.css("left"))};
     var new_coords = movement(old_coords);
 
-    // TODO: Figure out z-index shenanigans
     el.css("zIndex", el.css("zIndex") + 10);
     el.animate({
       top: new_coords.top,
       left: new_coords.left
     }, 200, "easeOutQuart", function() {
 
-      // TODO: Refactor
       $("[data-coords=" + coords(t.i, t.j) + "]").remove();
       el.attr("data-coords", coords(t.i, t.j));
       el.removeClass("blue");
@@ -154,7 +156,6 @@ function animate_move(obj, direction) {
 }
 
 function animate_new_tile(coords, direction) {
-  // TODO: Literally all of this should be refactored
   var origin;
 
   console.log(direction);
@@ -341,7 +342,6 @@ function generate_new_board(direction) {
   return {board: board, moved: moved};
 }
 
-// TODO: Extract only columns that moved and insert tile there
 function insert_new_tile(direction) {
   var locs = [];
 
@@ -409,8 +409,6 @@ function next() {
   render_next(next_tile);
 }
 
-// TODO: Make endgame cute
-// TODO: Share scores
 function lost() {
   var score_tile = function(t) {
     score = Math.pow(3, (Math.log(t / 3) / Math.log(2) + 1));
