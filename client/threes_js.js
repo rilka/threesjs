@@ -429,4 +429,21 @@ function lost() {
 $(function() {
   new_game();
   $(window).on("keydown", move);
+
+  // I don't know where to put this
+  var method = "play";
+  $("#music-control").click(function() {
+    if (method == "play") {
+      $("#music-audio").get(0)["play"]();
+      $(this).html("silence");
+      method = "pause";
+    }
+    else {
+      $("#music-audio").get(0)["pause"]();
+      $(this).html("music");
+      method = "play";
+    }
+  });
 });
+
+
