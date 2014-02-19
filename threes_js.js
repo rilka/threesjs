@@ -76,6 +76,7 @@ if (Meteor.isClient) {
 
   function generate_new_board(direction, tiles, show_moved_tiles) {
     var moved_tiles = [];
+    tiles = JSON.parse(JSON.stringify(tiles));
     switch(direction) {
       case LEFT:
         for (var i = 0; i <= 3; i++) {
@@ -311,10 +312,11 @@ if (Meteor.isClient) {
   // Movement (arrow keys)
   $(window).on("keydown", function(e) {
     var tiles = Session.get("tiles");
-
-    tiles = generate_new_board(e.which, tiles);
+    var new_tiles = generate_new_board(e.which, tiles);
     e.preventDefault();
-    new_tile(e.which, tiles);
+
+    if (!_.isEqual(tiles, new_tiles))
+      new_tile(e.which, new_tiles);
   });
 
   // Movement (mouse)
@@ -333,8 +335,10 @@ if (Meteor.isClient) {
   function drag_end() {
     // console.log("drag end");
     var tiles = Session.get("tiles");
-    tiles = generate_new_board(direction, tiles);
-    new_tile(direction, tiles);
+    var new_tiles = generate_new_board(direction, tiles);
+
+    if (!_.isEqual(tiles, new_tiles))
+      new_tile(direction, new_tiles);
 
     axis = null;
     direction = null;
