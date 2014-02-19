@@ -21,7 +21,7 @@
       <h2>A tiny browser clone of <a href="http://www.threesgame.com">the most perfect game</a>.</h2>
     </div>
     <div class="rules">
-      <p>Use your arrow keys (&#8592; &#8593; &#8594; &#8595;) to play.</p>
+      <p>Use your arrow keys (&#8592; &#8593; &#8594; &#8595;) or drag your mouse to play.</p>
     </div>
   </div>
 </template>
@@ -32,7 +32,9 @@
       {{#each rows}}
         <div class="row">
           {{#each this}}
-            <div class="tile {{tile_class this}}">{{tile_text this}}</div>
+            <div class="tile-container">
+              <div class="tile {{tile_class this}}">{{tile_text this}}</div>
+            </div>
           {{/each}}
         </div>
       {{/each}}

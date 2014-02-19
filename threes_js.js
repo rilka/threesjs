@@ -6,6 +6,7 @@
 [P1] Make endgame cute
 [P1] Share scores
 [P2] Refactor
+[P2] Responsiveness (SIGHHH)
 
 * * * * * * * * * * * * * * * * * * */
 
@@ -73,17 +74,8 @@ if (Meteor.isClient) {
     Session.set("next_tile", 2);
   }
 
-  // Gameplay
-  $(window).on('keydown', function(e) {
-    var tiles = Session.get("tiles");
-
-    tiles = generate_new_board(e.which, tiles);
-    e.preventDefault();
-    new_tile(e.which, tiles);
-  });
-
-
-  function generate_new_board(direction, tiles) {
+  function generate_new_board(direction, tiles, show_moved_tiles) {
+    var moved_tiles = [];
     switch(direction) {
       case LEFT:
         for (var i = 0; i <= 3; i++) {
@@ -94,11 +86,13 @@ if (Meteor.isClient) {
               if (tiles[i][j - 1] == 0) {
                 tiles[i][j - 1] = tiles[i][j];
                 tiles[i][j] = 0;
+                moved_tiles.push({i: i, j: j});
               }
               else if ((tiles[i][j - 1] == 1 && tiles[i][j] == 2) ||
                        (tiles[i][j - 1] == 2 && tiles[i][j] == 1)) {
                 tiles[i][j - 1] = 3;
                 tiles[i][j] = 0;
+                moved_tiles.push({i: i, j: j});
               }
             }
             else { // Twins
@@ -106,6 +100,7 @@ if (Meteor.isClient) {
                 continue;
               tiles[i][j - 1] *= 2;
               tiles[i][j] = 0;
+              moved_tiles.push({i: i, j: j});
             }
           }
         }
@@ -120,11 +115,13 @@ if (Meteor.isClient) {
               if (tiles[i][j + 1] == 0) {
                 tiles[i][j + 1] = tiles[i][j];
                 tiles[i][j] = 0;
+                moved_tiles.push({i: i, j: j});
               }
               else if ((tiles[i][j + 1] == 1 && tiles[i][j] == 2) ||
                        (tiles[i][j + 1] == 2 && tiles[i][j] == 1)) {
                 tiles[i][j + 1] = 3;
                 tiles[i][j] = 0;
+                moved_tiles.push({i: i, j: j});
               }
             }
             else { // Twins
@@ -132,6 +129,7 @@ if (Meteor.isClient) {
                 continue;
               tiles[i][j + 1] *= 2;
               tiles[i][j] = 0;
+              moved_tiles.push({i: i, j: j});
             }
           }
         }
@@ -146,11 +144,13 @@ if (Meteor.isClient) {
               if (tiles[i - 1][j] == 0) {
                 tiles[i - 1][j] = tiles[i][j];
                 tiles[i][j] = 0;
+                moved_tiles.push({i: i, j: j});
               }
               else if ((tiles[i - 1][j] == 1 && tiles[i][j] == 2) ||
                        (tiles[i - 1][j] == 2 && tiles[i][j] == 1)) {
                 tiles[i - 1][j] = 3;
                 tiles[i][j] = 0;
+                moved_tiles.push({i: i, j: j});
               }
             }
             else { // Twins
@@ -158,6 +158,7 @@ if (Meteor.isClient) {
                 continue;
               tiles[i - 1][j] *= 2;
               tiles[i][j] = 0;
+              moved_tiles.push({i: i, j: j});
             }
           }
         }
@@ -172,11 +173,13 @@ if (Meteor.isClient) {
               if (tiles[i + 1][j] == 0) {
                 tiles[i + 1][j] = tiles[i][j];
                 tiles[i][j] = 0;
+                moved_tiles.push({i: i, j: j});
               }
               else if ((tiles[i + 1][j] == 1 && tiles[i][j] == 2) ||
                        (tiles[i + 1][j] == 2 && tiles[i][j] == 1)) {
                 tiles[i + 1][j] = 3;
                 tiles[i][j] = 0;
+                moved_tiles.push({i: i, j: j});
               }
             }
             else { // Twins
@@ -184,13 +187,17 @@ if (Meteor.isClient) {
                 continue;
               tiles[i + 1][j] *= 2;
               tiles[i][j] = 0;
+              moved_tiles.push({i: i, j: j});
             }
           }
         }
       break;
     }
 
-    return tiles;
+    if (show_moved_tiles)
+      return moved_tiles;
+    else
+      return tiles;
   }
 
   function new_tile(direction, tiles) {
@@ -208,8 +215,8 @@ if (Meteor.isClient) {
     function random_tile() {
       var probs = [1, 1, 1, 1, 1, 1,
                    2, 2, 2, 2, 2, 2,
-                   3, 3, 3, 3, 3, 3,
-                   6, 6, 6,
+                   3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+                   6, 6, 6, 6,
                    12, 12,
                    24];
       var ind = Math.floor(Math.random() * probs.length);
@@ -291,8 +298,8 @@ if (Meteor.isClient) {
 
   function lost() {
     var tiles = Session.get("tiles");
-    var score = function(x) {return Math.pow(3, (Math.log(x / 3) / Math.log(10) + 1))}
-    var total = _.reduce(_.flatten(tiles), function(acc, x) {return acc + x;}, 0);
+    var score = function(x) {return Math.floor(Math.pow(3, (Math.log(x / 3) / Math.log(2) + 1)))}
+    var total = _.reduce(_.flatten(tiles), function(acc, x) {return acc + score(x);}, 0);
 
     alert("No more moves! Your score is " + total + " ^__^");
 
@@ -300,4 +307,77 @@ if (Meteor.isClient) {
   }
 
   new_game();
+
+  // Movement (arrow keys)
+  $(window).on("keydown", function(e) {
+    var tiles = Session.get("tiles");
+
+    tiles = generate_new_board(e.which, tiles);
+    e.preventDefault();
+    new_tile(e.which, tiles);
+  });
+
+  // Movement (mouse)
+  var axis = null;
+  var direction = null;
+  var moved_tiles;
+
+  function drag_start(e, de) {
+    // console.log("drag start");
+    if (Math.abs(de.offsetX) > Math.abs(de.offsetY))
+      axis = "x";
+    else
+      axis = "y";
+  }
+
+  function drag_end() {
+    // console.log("drag end");
+    var tiles = Session.get("tiles");
+    tiles = generate_new_board(direction, tiles);
+    new_tile(direction, tiles);
+
+    axis = null;
+    direction = null;
+  }
+
+  function drag(e, de) {
+    // console.log("drag end");
+    var new_direction;
+    if (axis == "x") {
+      if (de.offsetX < 0) {
+        // Left
+        // console.log("moving left");
+        new_direction = LEFT;
+      }
+      else {
+        // Right
+        // console.log("moving right");
+        new_direction = RIGHT;
+      }
+    }
+    else if (axis == "y") {
+      if (de.offsetY < 0) {
+        // Up
+        // console.log("moving up");
+        new_direction = UP;
+      }
+      else {
+        // Down
+        // console.log("moving down");
+        new_direction = DOWN;
+      }
+    }
+
+    if (new_direction != direction) {
+      var tiles = Session.get("tiles");
+      direction = new_direction;
+      moved_tiles = generate_new_board(direction, tiles, true);
+      console.log(moved_tiles);
+    }
+
+  }
+
+  $(window).drag("start", drag_start, {distance: 10});
+  $(window).drag(drag);
+  $(window).drag("end", drag_end);
 }
