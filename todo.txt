@@ -1,5 +1,8 @@
-P1: Add high-number tiles to stack (1/8th of highest tile, once every two stacks)
+P0: Add high-number tiles to stack (1/8th of highest tile, once every two stacks)
+
 P1: Make endgame pretty
+P1: "New game" button
 P1: Share scores on Facebook / Twitter
+
 P2: Cuteness (faces, bouncing, sounds, &c)
 P2: Refactor messy things

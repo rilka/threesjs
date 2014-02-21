@@ -11,3 +11,4 @@ standard-app-packages
 underscore
 jquery-ui
 GAnalytics
+router

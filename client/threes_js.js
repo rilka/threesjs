@@ -1,21 +1,19 @@
 /******************** HOUSEKEEPING *******************************************/
 
-// Constants
 LEFT = 37;
 RIGHT = 39;
 UP = 38;
 DOWN = 40;
 
-// Globals
-var tiles = [];
-var next_tile = null;
-
 /******************** UTILITY FUNCTIONS **************************************/
 
-var deck = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3];
-var current_deck = [];
+Session.set("deck", [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3]);
+Session.set("current_deck", []);
 
 function random_tile() {
+  var deck = Session.get("deck");
+  var current_deck = Session.get("current_deck");
+
   if (_.isEmpty(current_deck)) {
     current_deck = _.shuffle(deck);
   }
@@ -23,6 +21,8 @@ function random_tile() {
   var t = _.first(current_deck);
   current_deck = _.rest(current_deck);
 
+  Session.set("deck", deck);
+  Session.set("current_deck", current_deck);
   return t;
 }
 
@@ -39,10 +39,10 @@ function random_tile_with_blank() {
 // Helper to compute tile class
 function tile_class(tile) {
   if (tile == 1) {
-    return "red";
+    return "blue";
   }
   else if (tile == 2) {
-    return "blue";
+    return "red";
   }
   else {
     return "number";
@@ -61,6 +61,7 @@ Template.game.times = function(n, block) {
 /******************** DISPLAY FUNCTIONS **************************************/
 
 function render_board() {
+  var tiles = Session.get("tiles");
   for (var i = 0; i <= 3; i++) {
     for (var j = 0; j <= 3; j++) {
       var t = tiles[i][j];
@@ -82,6 +83,7 @@ function render_board() {
 }
 
 function render_next() {
+  var next_tile = Session.get("next_tile");
   $(".next .tile").removeClass("red");
   $(".next .tile").removeClass("blue");
   $(".next .tile").removeClass("number");
@@ -158,6 +160,7 @@ function animate_move(obj, direction) {
 }
 
 function animate_new_tile(coords, direction) {
+  var next_tile = Session.get("next_tile");
   var origin;
 
   switch(direction) {
@@ -213,15 +216,16 @@ function new_game() {
   $(".board .tile").remove();
 
   // Generate new configuration
-  tiles = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+  var tiles = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
   for (var i = 0; i <= 3; i++) {
     for (var j = 0; j <= 3; j++) {
       tiles[i][j] = random_tile_with_blank();
     }
   }
+  Session.set("tiles", tiles);
 
   // Generate new next tile
-  next_tile = random_tile();
+  Session.set("next_tile", random_tile());
 
   // Render new configuration and next tile
   render_board();
@@ -239,18 +243,21 @@ function move(e) {
 
   // Execute the move
   animate_move(g, direction);
-  tiles = g.board;
+  Session.set("tiles", g.board);
 
   // Add in the new tile
   var l = insert_new_tile(g.moved, direction);
   animate_new_tile(l, direction);
-  tiles[l.i][l.j] = next_tile;
+  var tiles = Session.get("tiles");
+  tiles[l.i][l.j] = Session.get("next_tile");
+  Session.set("tiles", tiles);
 
   // Woohoo!
   tick();
 }
 
 function generate_new_board(direction) {
+  var tiles = Session.get("tiles");
   var board = JSON.parse(JSON.stringify(tiles));
   var moved = [];
 
@@ -342,6 +349,7 @@ function generate_new_board(direction) {
 }
 
 function insert_new_tile(moved, direction) {
+  var tiles = Session.get("tiles");
   var locs = [];
 
   switch(direction) {
@@ -394,6 +402,8 @@ function insert_new_tile(moved, direction) {
 }
 
 function tick() {
+  var tiles = Session.get("tiles");
+
   // Check for empty spaces
   var tile_list = _.flatten(tiles);
   if (_.contains(tile_list, 0)) {
@@ -416,11 +426,14 @@ function tick() {
 }
 
 function next() {
-  next_tile = random_tile();
+  var next_tile = random_tile();
+  Session.set("next_tile", next_tile);
   render_next(next_tile);
 }
 
 function lost() {
+  var tiles = Session.get("tiles");
+
   var score_tile = function(t) {
     score = Math.pow(3, (Math.log(t / 3) / Math.log(2) + 1));
     return Math.floor(score);
@@ -435,20 +448,35 @@ function lost() {
   new_game();
 }
 
-/******************** GAME LOOP **********************************************/
+/******************** GAME LOOP 'N' STUFF ************************************/
 
 $(function() {
-  new_game();
+  GAnalytics.pageview();
+
+  if (!Session.get("tiles")) {
+    new_game();
+  }
+
+  else {
+    render_board();
+    render_next();
+  }
 
   var lazy_move = _.debounce(move, 250, true);
   $(window).on("keydown", function(e) {
-    e.preventDefault();
-    lazy_move(e);
+    if (e.keyCode == LEFT ||
+        e.keyCode == RIGHT ||
+        e.keyCode == UP ||
+        e.keyCode == DOWN)  {
+      e.preventDefault();
+      lazy_move(e);
+    }
   });
 
   // I don't know where to put this
   var method = "play";
-  $("#music-control").click(function() {
+  $("#music-control").click(function(e) {
+    e.preventDefault();
     if (method == "play") {
       $("#music-audio").get(0)["play"]();
       $(this).html("Pause");
