@@ -59,6 +59,7 @@ function generate_new_board(direction) {
   var tiles = Session.get("tiles");
   var board = JSON.parse(JSON.stringify(tiles));
   var moved = [];
+  var changed = [];
 
   var attempt_tile_move = function(i, j, i_pr, j_pr) {
     // Empty space
@@ -239,7 +240,7 @@ function lost() {
   }
 
   var total = _.reduce(_.flatten(tiles), function(acc, t) {
-    return acc + score_tile(t);
+    return acc + ((t != 1 && t != 2) ? score_tile(t) : 0);
   }, 0);
 
   document.THREE.display.render_lost(total);

@@ -46,7 +46,7 @@ function render_lost(total) {
     e.preventDefault();
     FB.ui({
       method: "feed",
-      link: "http://threes.meteor.com",
+      link: "http://threesjs.com",
       caption: fb_status,
     }, function(response){});
   });
@@ -122,7 +122,6 @@ function animate_move(obj, direction) {
       top: new_coords.top,
       left: new_coords.left
     }, 200, "easeOutQuart", function() {
-
       $("[data-coords=" + coords(t.i, t.j) + "]").remove();
       el.attr("data-coords", coords(t.i, t.j));
       el.removeClass("blue");
@@ -130,6 +129,8 @@ function animate_move(obj, direction) {
       el.removeClass("number");
       el.addClass(document.THREE.util.tile_class(t.t));
       el.html(t.t);
+
+      // el.effect("bounce", {distance: 30, times: 3});
     });
   });
 }
