@@ -1,6 +1,7 @@
 @blue: #66CCFF;
 @dark-green: #B6D9D9;
 @gray: #666E80;
+@light-gray: #FAFAFA;
 @light-green: #D0E6DF;
 @red: #FF6680;
 @yellow: #FFCC66;
@@ -13,13 +14,18 @@
   border-radius: @radius;
 }
 
+.border-box {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
 .transition(@transition: all 0.3s ease) {
   transition: @transition;
   -webkit-transition: @transition;
 }
 
 html, body {
-  background: #FAFAFA;
+  background: @light-gray;
   color: #777E8C;
   font-family: "Nunito", sans-serif;
   margin: 0;
@@ -29,7 +35,6 @@ html, body {
 a {
   color: darken(@dark-green, 10%);
   text-decoration: none;
-  .transition;
 
   &:hover {
     color: darken(@dark-green, 20%);
@@ -103,7 +108,7 @@ a {
     .border-radius;
     background: @light-green;
     left: -130px;
-    padding: 12px 32px 24px 20px;
+    padding: 12px 36px 26px 14px;
     position: absolute;
     top: 0px;
 
@@ -119,6 +124,28 @@ a {
       position: static !important;
       width: 56px;
       line-height: 77px;
+    }
+  }
+
+  .new {
+    background: @light-green;
+    box-shadow: 0px 8px @dark-green;
+    font-style: italic;
+    height: 40px;
+    line-height: 40px;
+    left: -130px;
+    position: absolute;
+    text-align: center;
+    text-transform: lowercase;
+    top: 152px;
+    width: 108px;
+    .border-radius;
+
+    &:hover {
+      background: #999;
+      box-shadow: 0px 8px #777;
+      color: #FFF;
+      cursor: pointer;
     }
   }
 }
@@ -160,6 +187,88 @@ a {
   &.number {
     background: #FFF;
     box-shadow: 0px 8px @yellow;
+    color: #000;
+  }
+}
+
+/******************** ENDGAME ************************************************/
+
+.overlay {
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  height: 100%;
+  left: 0px;
+  position: fixed;
+  top: 0px;
+  width: 100%;
+  z-index: 100;
+}
+
+.endgame {
+  background: @light-gray;
+  color: #000;
+  height: 220px;
+  width: 420px;
+  left: 50%;
+  margin-left: -210px;
+  margin-top: -110px;
+  overflow: hidden;
+  padding: 28px;
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  z-index: 1000;
+  .border-box;
+  .border-radius;
+
+  .score-intro {
+    color: #000;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+
+    strong {
+      color: darken(@yellow, 20%);
+    }
+  }
+
+  .score {
+    font-size: 72px;
+  }
+
+  .btn {
+    color: #FFF;
+    display: inline-block;
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin: 0 6px;
+    padding: 12px 16px;
+    text-transform: uppercase;
+    .border-box;
+    .border-radius;
+
+    &:hover {
+      background: #999;
+      box-shadow: 0px 6px #666;
+      color: #FFF;
+    }
+  }
+
+  .twitter-btn {
+    @twitter: #55ACEE;
+    background: @twitter;
+    box-shadow: 0px 6px darken(@twitter, 20%);
+  }
+
+  .facebook-btn {
+    @facebook: #3B5998;
+    background: @facebook;
+    box-shadow: 0px 6px darken(@facebook, 20%);
+  }
+
+  ::selection {
     color: #000;
   }
 }

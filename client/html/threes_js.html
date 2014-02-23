@@ -11,6 +11,9 @@
 </body>
 
 <template name="main">
+  <!-- ??? -->
+  <div id="fb-root"></div>
+
   {{> header}}
   {{> game}}
   {{> footer}}
@@ -45,6 +48,10 @@
       <div class="title">Next</div>
       <div class="tile"></div>
     </div>
+
+    <div class="new" id="new-game">
+      New game
+    </div>
   </div>
 </template>
 
@@ -59,4 +66,16 @@
 
 <template name="tile">
   <div class="tile" data-coords="{{ row }}{{ col }}">{{ tile }}</div>
+</template>
+
+<!-- END GAME -->
+
+<template name="endgame">
+  <div class="endgame">
+    <div class="score-intro">Thanks for playing! <strong>^____^</strong> Your score is</div>
+    <div class="score">{{ score }}</div>
+    <a class="btn twitter-btn" href="https://twitter.com/share?text={{ tweet }}" target="new">Tweet</a>
+    <a class="btn facebook-btn" href="" id="share-facebook" target="new">Facebook</a>
+    </div>
+  </div>
 </template>

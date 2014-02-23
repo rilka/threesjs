@@ -1,7 +1,6 @@
 {
   "packages": {
     "jquery-ui": {},
-    "GAnalytics": {},
-    "router": {}
+    "GAnalytics": {}
   }
 }
