@@ -2,6 +2,9 @@ document.THREE = document.THREE || {};
 
 function render_board() {
   var tiles = Session.get("tiles");
+
+  $(".board .tile").remove();
+
   for (var i = 0; i <= 3; i++) {
     for (var j = 0; j <= 3; j++) {
       var t = tiles[i][j];
@@ -66,9 +69,6 @@ function render_lost(total) {
 }
 
 function animate_move(obj, direction) {
-  var board = obj.board;
-  var moved = obj.moved;
-
   var movement;
 
   switch(direction) {
@@ -111,7 +111,8 @@ function animate_move(obj, direction) {
 
   $(".tile").css("zIndex", 10);
 
-  _.each(moved, function(t) {
+  // Move tiles
+  _.each(obj.moved, function(t) {
     var el = $("[data-coords=" + String(t.i) + String(t.j) + "]");
 
     var old_coords = {top: parseInt(el.css("top")), left: parseInt(el.css("left"))};
@@ -127,12 +128,23 @@ function animate_move(obj, direction) {
       el.removeClass("blue");
       el.removeClass("red");
       el.removeClass("number");
-      el.addClass(document.THREE.util.tile_class(t.t));
-      el.html(t.t);
 
-      // el.effect("bounce", {distance: 30, times: 3});
+      // FUCK
+      // if (!_.findWhere(obj.changed, {i: t.i, j: t.j})) {
+        el.addClass(document.THREE.util.tile_class(t.t));
+        el.find(".side").html(t.t);
+      // }
     });
   });
+
+  // Flip changed tiles
+  setTimeout(function() {
+    _.each(obj.changed, function(t) {
+      var el = $("[data-coords=" + String(t.i) + String(t.j) + "]");
+      el.toggleClass("flipped");
+      // el.effect("bounce", {direction: "up", distance: 10, times: 1}, 200);
+    });
+  }, 220);
 }
 
 function animate_new_tile(coords, direction) {
