@@ -26,7 +26,8 @@ function render_next() {
   var next_tile = Session.get("next_tile");
   $(".next .tile").removeClass("red")
                   .removeClass("blue")
-                  .removeClass("number");
+                  .removeClass("number")
+                  .removeClass("bonus");
   $(".next .tile").addClass(document.THREE.util.tile_class(next_tile));
 }
 

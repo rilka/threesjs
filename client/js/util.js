@@ -43,8 +43,11 @@ function tile_class(tile) {
   else if (tile === 2) {
     return "red";
   }
-  else {
+  else if (tile == 3) {
     return "number";
+  }
+  else {
+    return "bonus";
   }
 }
 
