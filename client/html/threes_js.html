@@ -65,16 +65,7 @@
 <!-- INDIVIDUAL TILES -->
 
 <template name="tile">
-  <div class="tile flip-container" data-coords="{{ row }}{{ col }}">
-    <div class="flipper">
-      <div class="front side">
-        {{ tile }}
-      </div>
-      <div class="back side">
-        {{ tile }}
-      </div>
-    </div>
-  </div>
+  <div class="tile" data-coords="{{ row }}{{ col }}">{{ tile }}</div>
 </template>
 
 <!-- END GAME -->

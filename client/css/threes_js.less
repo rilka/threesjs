@@ -55,6 +55,9 @@ a {
     letter-spacing: 4px;
     margin: 0;
     text-transform: uppercase;
+
+    .red { color: @red; }
+    .blue { color: @blue; }
   }
 
   h2 {
@@ -70,9 +73,6 @@ a {
       font-weight: 400;
     }
   }
-
-  .red { color: @red; }
-  .blue { color: @blue; }
 }
 
 /******************** MAIN COMPONENTS ****************************************/
@@ -170,24 +170,21 @@ a {
   text-align: center;
   width: 80px;
   z-index: 1;
+  .border-radius;
 
-  .front, .back {
-    .border-radius;
-  }
-
-  &.red .front, &.red .back {
+  &.red {
     background: @red;
     box-shadow: 0px 8px darken(@red, 20%);
     color: #FFF;
   }
 
-  &.blue .front, &.blue .back {
+  &.blue {
     background: @blue;
     box-shadow: 0px 8px darken(@blue, 20%);
     color: #FFF;
   }
 
-  &.number .front, &.number .back {
+  &.number {
     background: #FFF;
     box-shadow: 0px 8px @yellow;
     color: #000;
@@ -274,55 +271,4 @@ a {
   ::selection {
     color: #000;
   }
-}
-
-/******************** FLIPPING ***********************************************/
-
-/* entire container, keeps perspective */
-.flip-container {
-
-  perspective: 1000;
-  -webkit-perspective: 1000;
-}
-  /* flip the pane when hovered */
-  .flip-container.flipped .flipper {
-    transform: rotateY(180deg);
-    -ms-transform: rotateY(180deg);
-    -webkit-transform: rotateY(180deg);
-  }
-
-.flip-container, .front, .back {
-  width: 80px;
-  height: 110px;
-}
-
-/* flip speed goes here */
-.flipper {
-  transition: 0.6s;
-  -webkit-transition: 0.6s;
-  transform-style: preserve-3d;
-  -webkit-transform-style: preserve-3d;
-
-  position: relative;
-}
-
-/* hide back of pane during swap */
-.front, .back {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-/* front pane, placed above back */
-.front {
-  z-index: 2;
-}
-
-/* back, initially hidden pane */
-.back {
-  transform: rotateY(180deg);
-  -webkit-transform: rotateY(180deg);
 }
