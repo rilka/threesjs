@@ -1,8 +1,11 @@
 document.THREE = document.THREE || {};
 
 function new_game() {
-  // Generate new configuration
+  // Clear out old tiles
+  $(".board .tile").remove();
   var tiles = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+
+  // Generate new configuration
   var locs = [];
   var count = 0;
   while (count < 9) {
@@ -22,9 +25,6 @@ function new_game() {
 
   // Generate new next tile
   Session.set("next_tile", document.THREE.util.random_tile());
-
-  // Reset highest tile
-  Session.set("highest_tile", null);
 
   // Render new configuration and next tile
   document.THREE.display.render_board();
@@ -77,7 +77,6 @@ function generate_new_board(direction) {
       // Okay actually twins
       board[i][j] = 0;
       board[i_pr][j_pr] *= 2;
-      changed.push({i: i_pr, j: j_pr, t: board[i_pr][j_pr]});
       moved.push({i: i, j: j, t: board[i_pr][j_pr]});
     }
 
@@ -95,7 +94,6 @@ function generate_new_board(direction) {
                (board[i][j] === 2 && board[i_pr][j_pr] === 1)) {
         board[i_pr][j_pr] = 3;
         board[i][j] = 0;
-        changed.push({i: i_pr, j: j_pr, t: board[i_pr][j_pr]});
         moved.push({i: i, j: j, t: board[i_pr][j_pr]});
       }
     }
@@ -147,7 +145,7 @@ function generate_new_board(direction) {
     break;
   }
 
-  return {board: board, moved: moved, changed: changed};
+  return {board: board, moved: moved};
 }
 
 function insert_new_tile(moved, direction) {

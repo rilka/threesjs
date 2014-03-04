@@ -29,7 +29,7 @@ $(function() {
 
   // Handle keypresses
   var queue = [];
-  var lazy_move = _.throttle(document.THREE.game.move, 500, true);
+  var lazy_move = _.throttle(document.THREE.game.move, 250, true);
   $(window).on("keydown", function(e) {
     if (e.keyCode === LEFT ||
         e.keyCode === RIGHT ||
