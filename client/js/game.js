@@ -31,7 +31,39 @@ function new_game() {
   document.THREE.display.render_next();
 }
 
+var current_preview = null;
+
+function is_preview() {
+  return current_preview;
+}
+
+function clear_preview() {
+  if (!current_preview) return;
+  var direction = current_preview;
+  current_preview = null;
+  var g = generate_new_board(direction);
+  document.THREE.display.clear_preview(g, direction);
+}
+
+function preview_move(e) {
+  console.log('preview_move');
+  var direction = e.which;
+  if (current_preview) return;
+  current_preview = direction;
+  var g = generate_new_board(direction);
+
+  // Check if any tiles moved
+  if (_.isEmpty(g.moved)) {
+    return;
+  }
+
+  // Execute the move
+  document.THREE.display.preview_move(g, direction);
+}
+
 function move(e) {
+  if (current_preview) return;
+  console.log('move');
   var direction = e.which;
   var g = generate_new_board(direction);
 
@@ -50,8 +82,6 @@ function move(e) {
   var tiles = Session.get("tiles");
   tiles[l.i][l.j] = Session.get("next_tile");
   Session.set("tiles", tiles);
-
-  // Woohoo!
   tick();
 }
 
@@ -253,5 +283,8 @@ document.THREE.game = {
   insert_new_tile: insert_new_tile,
   tick: tick,
   next: next,
-  lost: lost
+  lost: lost,
+  preview_move: preview_move,
+  clear_preview: clear_preview,
+  is_preview: is_preview
 };
