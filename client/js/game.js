@@ -46,7 +46,6 @@ function clear_preview() {
 }
 
 function preview_move(e) {
-  console.log('preview_move');
   var direction = e.which;
   if (current_preview) return;
   current_preview = direction;
@@ -63,7 +62,6 @@ function preview_move(e) {
 
 function move(e) {
   if (current_preview) return;
-  console.log('move');
   var direction = e.which;
   var g = generate_new_board(direction);
 

@@ -66,18 +66,6 @@ function render_lost(total) {
   });
 }
 
-LEFT = 37;
-RIGHT = 39;
-UP = 38;
-DOWN = 40;
-
-const REVERSE_DIRECTIONS = {
-  37: RIGHT,
-  39: LEFT,
-  38: DOWN,
-  40: UP,
-};
-
 const DIRECTIONS = {
   37: { // LEFT
     movement: function(c) {
