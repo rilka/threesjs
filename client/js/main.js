@@ -36,7 +36,23 @@ $(function() {
         e.keyCode === UP ||
         e.keyCode === DOWN)  {
       e.preventDefault();
-      lazy_move(e);
+      if (e.shiftKey) {
+        document.THREE.game.preview_move(e);
+      } else {
+        if (!document.THREE.game.is_preview()) {
+          lazy_move(e);
+        }
+      }
+    }
+  });
+
+  $(window).on("keyup", function(e) {
+    if (e.keyCode === LEFT ||
+        e.keyCode === RIGHT ||
+        e.keyCode === UP ||
+        e.keyCode === DOWN)  {
+      e.preventDefault();
+      document.THREE.game.clear_preview();
     }
   });
 

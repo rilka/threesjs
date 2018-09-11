@@ -66,59 +66,109 @@ function render_lost(total) {
   });
 }
 
+const DIRECTIONS = {
+  37: { // LEFT
+    movement: function(c) {
+      return {top: c.top, left: c.left - 92};
+    },
+    partialMovement: function(c) {
+      return {top: c.top, left: c.left - 70};
+    },
+    coords : function(i, j) {
+      return String(i) + String(j - 1);
+    },
+  },
+  39: { // RIGHT
+    movement: function(c) {
+      return {top: c.top, left: c.left + 92};
+    },
+    partialMovement: function(c) {
+      return {top: c.top, left: c.left + 70};
+    },
+    coords : function(i, j) {
+      return String(i) + String(j + 1);
+    },
+  },
+  38: { // UP
+    movement: function(c) {
+      return {top: c.top - 130, left: c.left};
+    },
+    partialMovement: function(c) {
+      return {top: c.top - 90, left: c.left};
+    },
+    coords : function(i, j) {
+      return String(i - 1) + String(j);
+    },
+  },
+  40: { // DOWN
+    movement: function(c) {
+      return {top: c.top + 130, left: c.left};
+    },
+    partialMovement: function(c) {
+      return {top: c.top + 90, left: c.left};
+    },
+    coords : function(i, j) {
+      return String(i + 1) + String(j);
+    },
+  },
+};
+
+function clear_preview(obj, direction) {
+  var moved = obj.moved;
+  _.each(moved, function(t) {
+    var el = $("[data-coords=" + String(t.i) + String(t.j) + "]");
+    var top = 22 + (t.i * 130);
+    var left = 22 + (t.j * 92);
+    el.stop();
+    el.animate({
+      top: top,
+      left: left,
+    }, 200, "easeOutQuart");
+  });
+}
+
+function preview_move(obj, direction) {
+  var board = obj.board;
+  var moved = obj.moved;
+
+  var movement = DIRECTIONS[direction].partialMovement;
+  $(".tile").css("zIndex", 10);
+
+  _.each(moved, function(t) {
+    var el = $("[data-coords=" + String(t.i) + String(t.j) + "]");
+
+    var top = 22 + (t.i * 130);
+    var left = 22 + (t.j * 92);
+    var new_coords = movement({top: top, left: left});
+
+    el.css("zIndex", 100);
+    el.stop();
+    el.animate({
+      top: new_coords.top,
+      left: new_coords.left,
+      zIndex: 100 // maintain the zIndex at 100
+    }, 200, "easeOutQuart");
+  });
+}
+
 function animate_move(obj, direction) {
   var board = obj.board;
   var moved = obj.moved;
 
-  var movement;
-
-  switch(direction) {
-    case LEFT:
-      movement = function(c) {
-        return {top: c.top, left: c.left - 92};
-      }
-      coords = function(i, j) {
-        return String(i) + String(j - 1);
-      }
-    break;
-
-    case RIGHT:
-      movement = function(c) {
-        return {top: c.top, left: c.left + 92};
-      }
-      coords = function(i, j) {
-        return String(i) + String(j + 1);
-      }
-    break;
-
-    case UP:
-      movement = function(c) {
-        return {top: c.top - 130, left: c.left};
-      }
-      coords = function(i, j) {
-        return String(i - 1) + String(j);
-      }
-    break;
-
-    case DOWN:
-      movement = function(c) {
-        return {top: c.top + 130, left: c.left};
-      }
-      coords = function(i, j) {
-        return String(i + 1) + String(j);
-      }
-    break;
-  }
+  var movement = DIRECTIONS[direction].movement;
+  var coords = DIRECTIONS[direction].coords;
 
   $(".tile").css("zIndex", 10);
 
   _.each(moved, function(t) {
     var el = $("[data-coords=" + String(t.i) + String(t.j) + "]");
 
-    var old_coords = {top: parseInt(el.css("top")), left: parseInt(el.css("left"))};
-    var new_coords = movement(old_coords);
+    var top = 22 + (t.i * 130);
+    var left = 22 + (t.j * 92);
+    var new_coords = movement({top: top, left: left});
 
     el.css("zIndex", 100);
+    el.stop();
     el.animate({
       top: new_coords.top,
       left: new_coords.left
@@ -190,5 +240,7 @@ document.THREE.display = {
   render_next: render_next,
   render_lost: render_lost,
   animate_move: animate_move,
-  animate_new_tile: animate_new_tile
+  animate_new_tile: animate_new_tile,
+  preview_move: preview_move,
+  clear_preview: clear_preview
 };
